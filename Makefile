@@ -17,7 +17,8 @@ vpath .base build
 ########################################################
 
 # your C compiler:
-CC       = gcc
+# CC       = gcc
+CC        = /usr/local/Cellar/gcc/9.1.0/bin/gcc-9
 #CC       = icc
 #CC       = pgcc
 
