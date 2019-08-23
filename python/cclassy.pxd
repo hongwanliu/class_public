@@ -28,6 +28,7 @@ cdef extern from "class.h":
          camb_format
 
     cdef struct precision:
+        double recfast_fudge_H
         ErrorMsg error_message
 
     cdef struct background:
