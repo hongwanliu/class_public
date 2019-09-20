@@ -86,6 +86,8 @@ cdef extern from "class.h":
         double rs_d
         double YHe
         double n_e
+        char * ALPHA_FILE
+        char * RR_FILE
 
         int tt_size
 

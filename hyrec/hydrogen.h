@@ -39,8 +39,12 @@ double rec_HRecFast_dxedlna(double xe, double nH, double H, double TM, double TR
 
 /************* EFFECTIVE MULTI LEVEL ATOM *******************/
 
-#define ALPHA_FILE  "Alpha_inf.dat"     /* Contains the effective recombination coefficients to 2s and 2p */
-#define RR_FILE     "R_inf.dat"         /* Contains the effective transfer rate R_{2p,2s} */
+// #define ALPHA_FILE  "Alpha_inf.dat"     /* Contains the effective recombination coefficients to 2s and 2p */
+// #define RR_FILE     "R_inf.dat"         /* Contains the effective transfer rate R_{2p,2s} */
+
+// HL: Changed to variables in the hope that they can be accessed. 
+char * ALPHA_FILE = "Alpha_inf.dat"
+char * RR_FILE    = "R_inf.dat"
 
 
 /* Boundaries and number of elements of temperature tables */
