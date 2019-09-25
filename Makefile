@@ -16,9 +16,13 @@ vpath .base build
 ###### LINES TO ADAPT TO YOUR PLATEFORM ################
 ########################################################
 
+# Successfully compiled with gcc 9.2.0, in the python3 environment,
+# with all the openmp lgomp flags turned on. Note that the GCCPATH
+# seems to have to be specified manually in python/setup.py.
+
 # your C compiler:
 # CC       = gcc
-CC        = /usr/local/Cellar/gcc/9.1.0/bin/gcc-9
+CC        = /usr/local/Cellar/gcc/9.2.0/bin/gcc-9
 #CC       = icc
 #CC       = pgcc
 

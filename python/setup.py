@@ -11,7 +11,11 @@ import os.path as osp
 GCCPATH_STRING = sbp.Popen(
     ['gcc', '-print-libgcc-file-name'],
     stdout=sbp.PIPE).communicate()[0]
+
 GCCPATH = osp.normpath(osp.dirname(GCCPATH_STRING)).decode()
+
+# For some reason the path must be corrected to the below:
+GCCPATH = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/lib/darwin'
 
 liblist = ["class"]
 MVEC_STRING = sbp.Popen(
@@ -33,6 +37,7 @@ with open(os.path.join(include_folder, 'common.h'), 'r') as v_file:
             VERSION = line.split()[-1][2:-1]
             break
 
+# also need the extra_link_args below. 
 setup(
     name='classy',
     version=VERSION,
@@ -43,7 +48,7 @@ setup(
                            include_dirs=[nm.get_include(), include_folder],
                            libraries=liblist,
                            library_dirs=[root_folder, GCCPATH],
-                           extra_link_args=['-lgomp'],
+                           extra_link_args=['-lgomp', '-Wl,-rpath,/usr/local/opt/gcc/lib/gcc/9/'],
                            )],
     #data_files=[('bbn', ['../bbn/sBBN.dat'])]
 )

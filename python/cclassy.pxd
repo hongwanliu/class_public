@@ -29,6 +29,8 @@ cdef extern from "class.h":
 
     cdef struct precision:
         double recfast_fudge_H
+        FileName hyrec_Alpha_inf_file
+        # FileName hyrec_R_inf_file
         ErrorMsg error_message
 
     cdef struct background:
@@ -69,6 +71,7 @@ cdef extern from "class.h":
 
     cdef struct thermo:
         ErrorMsg error_message
+        int thermodynamics_verbose
         int th_size
         int index_th_xe
         int index_th_Tb
@@ -86,8 +89,6 @@ cdef extern from "class.h":
         double rs_d
         double YHe
         double n_e
-        char * ALPHA_FILE
-        char * RR_FILE
 
         int tt_size
 
