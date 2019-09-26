@@ -106,13 +106,11 @@ void read_rates(HRATEEFF *rate_table){
    rate_table->DTM_TR = rate_table->TM_TR_tab[1] - rate_table->TM_TR_tab[0];
 
    for (i = 0; i < NTR; i++) {
-      for (j = 0; j < NTM; j++) {
-	 for (l = 0; l <= 1; l++) {
-           fscanf_result = fscanf(fA, "%le", &(rate_table->logAlpha_tab[l][j][i]));
-           if(fscanf_result != 1){printf("Hyrec Warning :: Could not read log Alpha table (Alpha_inf.dat)");}
-           rate_table->logAlpha_tab[l][j][i] = log(rate_table->logAlpha_tab[l][j][i]);
-        }
-      }
+  	 for (l = 0; l <= 1; l++) {
+             fscanf_result = fscanf(fA, "%le", &(rate_table->logAlpha_tab[l][i]));
+             if(fscanf_result != 1){printf("Hyrec Warning :: Could not read log Alpha table (Alpha_inf.dat)");}
+             rate_table->logAlpha_tab[l][i] = log(rate_table->logAlpha_tab[l][i]);
+          }
 
       fscanf_result = fscanf(fR, "%le", &(rate_table->logR2p2s_tab[i]));
       if(fscanf_result != 1){printf("Hyrec Warning :: Could not read rate table (R_inf.dat)");}

@@ -55,7 +55,7 @@ double rec_HRecFast_dxedlna(double xe, double nH, double H, double TM, double TR
 typedef struct {
   double *logTR_tab;
   double *TM_TR_tab;
-  double **logAlpha_tab[2];
+  double *logAlpha_tab[2];
   double *logR2p2s_tab;
   double DlogTR, DTM_TR;
 }
