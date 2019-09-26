@@ -58,7 +58,9 @@ typedef struct {
   double *logTR_tab;
   double *TM_TR_tab;
   double *logAlpha_tab[2];
+  double *logBeta_tab[2];
   double *logR2p2s_tab;
+  double *logR2s2p_tab;
   double DlogTR, DTM_TR;
 }
 HRATEEFF;
