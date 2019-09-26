@@ -3312,10 +3312,10 @@ int input_default_precision ( struct precision * ppr ) {
   strcat(ppr->hyrec_Alpha_inf_file,"/hyrec/Alpha_BB_n_250.dat");
   sprintf(ppr->hyrec_Beta_inf_file,__CLASSDIR__);
   strcat(ppr->hyrec_Beta_inf_file,"/hyrec/Beta_BB_n_250.dat");
-  sprintf(ppr->hyrec_R2pto2s_inf_file,__CLASSDIR__);
-  strcat(ppr->hyrec_R2pto2s_inf_file,"/hyrec/R_2pto2s_BB_n_250.dat");
-  sprintf(ppr->hyrec_R2sto2p_inf_file,__CLASSDIR__);
-  strcat(ppr->hyrec_R2sto2p_inf_file,"/hyrec/R_2sto2p_BB_n_250.dat");
+  sprintf(ppr->hyrec_R_2pto2s_inf_file,__CLASSDIR__);
+  strcat(ppr->hyrec_R_2pto2s_inf_file,"/hyrec/R_2pto2s_BB_n_250.dat");
+  sprintf(ppr->hyrec_R_2sto2p_inf_file,__CLASSDIR__);
+  strcat(ppr->hyrec_R_2sto2p_inf_file,"/hyrec/R_2sto2p_BB_n_250.dat");
   sprintf(ppr->hyrec_two_photon_tables_file,__CLASSDIR__);
   strcat(ppr->hyrec_two_photon_tables_file,"/hyrec/two_photon_tables.dat");
 
