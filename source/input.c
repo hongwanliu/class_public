@@ -2596,7 +2596,9 @@ int input_read_parameters(
   class_read_double("recfast_H_frac",ppr->recfast_H_frac);
 
   class_read_string("Alpha_inf hyrec file",ppr->hyrec_Alpha_inf_file);
-  class_read_string("R_inf hyrec file",ppr->hyrec_R_inf_file);
+  class_read_string("Beta_inf hyrec file",ppr->hyrec_Beta_inf_file);
+  class_read_string("R_2pto2s hyrec file",ppr->hyrec_R_2pto2s_inf_file);
+  class_read_string("R_2sto2p hyrec file",ppr->hyrec_R_2sto2p_inf_file);
   class_read_string("two_photon_tables hyrec file",ppr->hyrec_two_photon_tables_file);
 
   class_read_double("reionization_z_start_max",ppr->reionization_z_start_max);
@@ -3307,9 +3309,13 @@ int input_default_precision ( struct precision * ppr ) {
   ppr->recfast_H_frac=1.e-3;               /* from recfast 1.4 */
 
   sprintf(ppr->hyrec_Alpha_inf_file,__CLASSDIR__);
-  strcat(ppr->hyrec_Alpha_inf_file,"/hyrec/Alpha_inf.dat");
-  sprintf(ppr->hyrec_R_inf_file,__CLASSDIR__);
-  strcat(ppr->hyrec_R_inf_file,"/hyrec/R_inf.dat");
+  strcat(ppr->hyrec_Alpha_inf_file,"/hyrec/Alpha_BB_n_250.dat");
+  sprintf(ppr->hyrec_Beta_inf_file,__CLASSDIR__);
+  strcat(ppr->hyrec_Beta_inf_file,"/hyrec/Beta_BB_n_250.dat");
+  sprintf(ppr->hyrec_R2pto2s_inf_file,__CLASSDIR__);
+  strcat(ppr->hyrec_R2pto2s_inf_file,"/hyrec/R_2pto2s_BB_n_250.dat");
+  sprintf(ppr->hyrec_R2sto2p_inf_file,__CLASSDIR__);
+  strcat(ppr->hyrec_R2sto2p_inf_file,"/hyrec/R_2sto2p_BB_n_250.dat");
   sprintf(ppr->hyrec_two_photon_tables_file,__CLASSDIR__);
   strcat(ppr->hyrec_two_photon_tables_file,"/hyrec/two_photon_tables.dat");
 

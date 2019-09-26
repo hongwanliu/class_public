@@ -482,7 +482,9 @@ struct precision
   double recfast_H_frac;              /**< governs time at which full equation of evolution for Tmat is used */
 /* @cond INCLUDE_WITH_DOXYGEN */
   FileName hyrec_Alpha_inf_file;
-  FileName hyrec_R_inf_file;
+  FileName hyrec_Beta_inf_file;
+  FileName hyrec_R_2pto2s_inf_file;
+  FileName hyrec_R_2sto2p_inf_file;
   FileName hyrec_two_photon_tables_file;
 /* @endcond */
   /* - for reionization */

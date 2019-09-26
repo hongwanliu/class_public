@@ -2653,8 +2653,8 @@ int thermodynamics_recombination_with_hyrec(
   double *xe_output, *Tm_output;
   int i,j,l,Nz,b;
   double z, xe, Tm, Hz;
-  FILE *fA;
-  FILE *fR;
+  FILE *fA, *fB;
+  FILE *fR_2pto2s, *fR_2sto2p;
   double L2s1s_current;
   void * buffer;
   int buf_size;
@@ -2694,7 +2694,7 @@ int thermodynamics_recombination_with_hyrec(
 
   /* allocate contiguous memory zone */
 
-  buf_size = (2*NTR+NTM+2*NTR*NTM+2*param.nz)*sizeof(double) + 2*NTM*sizeof(double*);
+  buf_size = (NTR+NTM+6*NTR+2*param.nz)*sizeof(double);
 
   class_alloc(buffer,
               buf_size,
@@ -2704,19 +2704,14 @@ int thermodynamics_recombination_with_hyrec(
 
   rate_table.logTR_tab = (double*)buffer;
   rate_table.TM_TR_tab = (double*)(rate_table.logTR_tab + NTR);
-  rate_table.logAlpha_tab[0] = (double**)(rate_table.TM_TR_tab+NTM);
-  rate_table.logAlpha_tab[1] = (double**)(rate_table.logAlpha_tab[0]+NTM);
-  rate_table.logAlpha_tab[0][0] = (double*)(rate_table.logAlpha_tab[1]+NTM);
-  for (j=1;j<NTM;j++) {
-    rate_table.logAlpha_tab[0][j] = (double*)(rate_table.logAlpha_tab[0][j-1]+NTR);
-  }
-  rate_table.logAlpha_tab[1][0] = (double*)(rate_table.logAlpha_tab[0][NTM-1]+NTR);
-  for (j=1;j<NTM;j++) {
-    rate_table.logAlpha_tab[1][j] = (double*)(rate_table.logAlpha_tab[1][j-1]+NTR);
-  }
-  rate_table.logR2p2s_tab = (double*)(rate_table.logAlpha_tab[1][NTM-1]+NTR);
+  rate_table.logAlpha_tab[0] = (double*)(rate_table.TM_TR_tab+NTM);
+  rate_table.logAlpha_tab[1] = (double*)(rate_table.logAlpha_tab[0]+NTR);
+  rate_table.logBeta_tab[0]  = (double*)(rate_table.logAlpha_tab[1]+NTR);
+  rate_table.logBeta_tab[1]  = (double*)(rate_table.logBeta_tab[0]+NTR);
+  rate_table.logR2p2s_tab = (double*)(rate_table.logBeta_tab[1]+NTR);
+  rate_table.logR2s2p_tab = (double*)(rate_table.logR2p2s_tab+NTR);
 
-  xe_output = (double*)(rate_table.logR2p2s_tab+NTR);
+  xe_output = (double*)(rate_table.logR2s2p_tab+NTR);
   Tm_output = (double*)(xe_output+param.nz);
 
   /* store sampled values of temperatures */
@@ -2732,24 +2727,32 @@ int thermodynamics_recombination_with_hyrec(
   /* read in file */
 
   class_open(fA,ppr->hyrec_Alpha_inf_file, "r",pth->error_message);
-  class_open(fR,ppr->hyrec_R_inf_file, "r",pth->error_message);
+  class_open(fB,ppr->hyrec_Beta_inf_file, "r",pth->error_message);
+  class_open(fR_2pto2s,ppr->hyrec_R_2pto2s_inf_file, "r",pth->error_message);
+  class_open(fR_2sto2p,ppr->hyrec_R_2sto2p_inf_file, "r",pth->error_message);
 
   for (i = 0; i < NTR; i++) {
-    for (j = 0; j < NTM; j++) {
       for (l = 0; l <= 1; l++) {
-        if (fscanf(fA, "%le", &(rate_table.logAlpha_tab[l][j][i])) != 1)
+        if (fscanf(fA, "%le", &(rate_table.logAlpha_tab[l][i])) != 1)
           class_stop(pth->error_message,"Error reading hyrec data file %s",ppr->hyrec_Alpha_inf_file);
-        rate_table.logAlpha_tab[l][j][i] = log(rate_table.logAlpha_tab[l][j][i]);
+        rate_table.logAlpha_tab[l][i] = log(rate_table.logAlpha_tab[l][i]);
+        if (fscanf(fB, "%le", &(rate_table.logBeta_tab[l][i])) != 1)
+          class_stop(pth->error_message,"Error reading hyrec data file %s",ppr->hyrec_Beta_inf_file);
+        rate_table.logBeta_tab[l][i] = log(rate_table.logBeta_tab[l][i]);
       }
-    }
 
-    if (fscanf(fR, "%le", &(rate_table.logR2p2s_tab[i])) !=1)
-      class_stop(pth->error_message,"Error reading hyrec data file %s",ppr->hyrec_R_inf_file);
+    if (fscanf(fR_2pto2s, "%le", &(rate_table.logR2p2s_tab[i])) !=1)
+      class_stop(pth->error_message,"Error reading hyrec data file %s",ppr->hyrec_R_2pto2s_inf_file);
     rate_table.logR2p2s_tab[i] = log(rate_table.logR2p2s_tab[i]);
+    if (fscanf(fR_2sto2p, "%le", &(rate_table.logR2s2p_tab[i])) !=1)
+      class_stop(pth->error_message,"Error reading hyrec data file %s",ppr->hyrec_R_2sto2p_inf_file);
+    rate_table.logR2sto2p_tab[i] = log(rate_table.logR2s2p_tab[i]);
 
   }
   fclose(fA);
-  fclose(fR);
+  fclose(fB);
+  fclose(fR_2pto2s);
+  fclose(fR_2sto2p);
 
   /* Read two-photon rate tables */
 
