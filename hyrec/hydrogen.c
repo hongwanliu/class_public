@@ -112,11 +112,18 @@ void read_rates(HRATEEFF *rate_table){
              fscanf_result = fscanf(fA, "%le", &(rate_table->logAlpha_tab[l][i]));
              if(fscanf_result != 1){printf("Hyrec Warning :: Could not read log Alpha table (Alpha_inf.dat)");}
              rate_table->logAlpha_tab[l][i] = log(rate_table->logAlpha_tab[l][i]);
+             fscanf_result = fscanf(fB, "%le", &(rate_table->logBeta_tab[l][i]));
+             if(fscanf_result != 1){printf("Hyrec Warning :: Could not read log Beta table (Beta_inf.dat)");}
+             rate_table->logBeta_tab[l][i] = log(rate_table->logBeta_tab[l][i]);
           }
 
-      fscanf_result = fscanf(fR, "%le", &(rate_table->logR2p2s_tab[i]));
-      if(fscanf_result != 1){printf("Hyrec Warning :: Could not read rate table (R_inf.dat)");}
+      fscanf_result = fscanf(fR_2pto2s, "%le", &(rate_table->logR2p2s_tab[i]));
+      if(fscanf_result != 1){printf("Hyrec Warning :: Could not read rate table for 2p->2s (R_inf.dat)");}
       rate_table->logR2p2s_tab[i] = log(rate_table->logR2p2s_tab[i]);
+
+      fscanf_result = fscanf(fR_2sto2p, "%le", &(rate_table->logR2s2p_tab[i]));
+      if(fscanf_result != 1){printf("Hyrec Warning :: Could not read rate table for 2s->2p (R_inf.dat)");}
+      rate_table->logR2s2p_tab[i] = log(rate_table->logR2s2p_tab[i]);
 
    }
    fclose(fA);
