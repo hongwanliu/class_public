@@ -127,7 +127,9 @@ void read_rates(HRATEEFF *rate_table){
 
    }
    fclose(fA);
-   fclose(fR);
+   fclose(fB);
+   fclose(fR_2sto2p);
+   fclose(fR_2pto2s);
 }
 
 /************************************************************************************************
@@ -135,13 +137,13 @@ Interpolation of tabulated effective rates
 To be more (slightly) efficient, not using the external interpolation routine.
 ************************************************************************************************/
 
-void interpolate_rates(double Alpha[2], double Beta[2], double *R2p2s, double TR, double TM_TR, HRATEEFF *rate_table) {
+void interpolate_rates(double Alpha[2], double Beta[2], double *R2p2s, double *R2s2p, double TR, double TM_TR, HRATEEFF *rate_table) {
     double factor;
     unsigned l, k;
     long iTM, iTR;
-    double frac1, frac2;
+    double frac2;
     double logTR;
-    double coeff1[4], coeff2[4], temp[4];
+    double coeff2[4], temp[4];
 
     logTR = log(TR);
 
@@ -157,16 +159,6 @@ void interpolate_rates(double Alpha[2], double Beta[2], double *R2p2s, double TR
       exit(1);
     }
 
-    /* Identify location to interpolate in TM/TR */
-    iTM = (long)floor((TM_TR - TM_TR_MIN)/rate_table->DTM_TR);
-    if (iTM < 1) iTM = 1;
-    if (iTM > NTM-3) iTM = NTM-3;
-    frac1 = (TM_TR - TM_TR_MIN)/rate_table->DTM_TR - iTM;
-    coeff1[0] = frac1*(frac1-1.)*(2.-frac1)/6.;
-    coeff1[1] = (1.+frac1)*(1.-frac1)*(2.-frac1)/2.;
-    coeff1[2] = (1.+frac1)*frac1*(2.-frac1)/2.;
-    coeff1[3] = (1.+frac1)*frac1*(frac1-1.)/6.;
-
     /* Identify location to interpolate in log(TR) */
     iTR = (long)floor((logTR - log(TR_MIN))/rate_table->DlogTR);
     if (iTR < 1) iTR = 1;
@@ -178,36 +170,58 @@ void interpolate_rates(double Alpha[2], double Beta[2], double *R2p2s, double TR
     coeff2[3] = (1.+frac2)*frac2*(frac2-1.)/6.;
 
 
+    // for (l = 0; l <= 1; l++) {
+    // /* effective recombination coefficient to each level */
+    //    for (k = 0; k < 4; k++) {
+    //        temp[k] = rate_table->logAlpha_tab[l][iTM-1+k][iTR-1]*coeff2[0]
+    //                + rate_table->logAlpha_tab[l][iTM-1+k][iTR]*coeff2[1]
+    //                + rate_table->logAlpha_tab[l][iTM-1+k][iTR+1]*coeff2[2]
+    //                + rate_table->logAlpha_tab[l][iTM-1+k][iTR+2]*coeff2[3];
+    //    }
+
+    //   Alpha[l] = exp(temp[0]*coeff1[0]+temp[1]*coeff1[1]
+    //                 +temp[2]*coeff1[2]+temp[3]*coeff1[3]);
+
+    //  Alpha evaluated at Tm = Tr, for use in detailed balance 
+    // Beta[l] = exp(rate_table->logAlpha_tab[l][NTM-1][iTR-1]*coeff2[0]
+    //              +rate_table->logAlpha_tab[l][NTM-1][iTR]*coeff2[1]
+    //              +rate_table->logAlpha_tab[l][NTM-1][iTR+1]*coeff2[2]
+    //              +rate_table->logAlpha_tab[l][NTM-1][iTR+2]*coeff2[3]);
+    // }
+
+    // /* Beta obtained by detailed balance */
+    // /* factor = pow(2.0 * M_PI * mue *TR / hPc / hPc, 1.5)) * exp(-0.25*EI/TR) */
+    // factor = 3.016103031869581e21 *  TR*sqrt(TR) * exp(-3.399571517984581/TR);
+    // Beta[0] *= factor;              /* 2s */
+    // Beta[1] *= factor/3.;           /* 2p */
+
+    /* New code for Alpha and Beta, just linear interpolation over TR */
     for (l = 0; l <= 1; l++) {
-    /* effective recombination coefficient to each level */
-       for (k = 0; k < 4; k++) {
-           temp[k] = rate_table->logAlpha_tab[l][iTM-1+k][iTR-1]*coeff2[0]
-                   + rate_table->logAlpha_tab[l][iTM-1+k][iTR]*coeff2[1]
-                   + rate_table->logAlpha_tab[l][iTM-1+k][iTR+1]*coeff2[2]
-                   + rate_table->logAlpha_tab[l][iTM-1+k][iTR+2]*coeff2[3];
-       }
-
-      Alpha[l] = exp(temp[0]*coeff1[0]+temp[1]*coeff1[1]
-                    +temp[2]*coeff1[2]+temp[3]*coeff1[3]);
-
-    /* Alpha evaluated at Tm = Tr, for use in detailed balance */
-    Beta[l] = exp(rate_table->logAlpha_tab[l][NTM-1][iTR-1]*coeff2[0]
-                 +rate_table->logAlpha_tab[l][NTM-1][iTR]*coeff2[1]
-                 +rate_table->logAlpha_tab[l][NTM-1][iTR+1]*coeff2[2]
-                 +rate_table->logAlpha_tab[l][NTM-1][iTR+2]*coeff2[3]);
+      Alpha[l] = exp(
+        rate_table->logAlpha_tab[l][iTR-1]*coeff2[0]
+        + rate_table->logAlpha_tab[l][iTR]*coeff2[1]
+        + rate_table->logAlpha_tab[l][iTR+1]*coeff2[2]
+        + rate_table->logAlpha_tab[l][iTR+2]*coeff2[3]
+      ); 
+      Beta[l] = exp(
+        rate_table->logAlpha_tab[l][iTR-1]*coeff2[0]
+        + rate_table->logAlpha_tab[l][iTR]*coeff2[1]
+        + rate_table->logAlpha_tab[l][iTR+1]*coeff2[2]
+        + rate_table->logAlpha_tab[l][iTR+2]*coeff2[3]
+      ); 
     }
-
-    /* Beta obtained by detailed balance */
-    /* factor = pow(2.0 * M_PI * mue *TR / hPc / hPc, 1.5)) * exp(-0.25*EI/TR) */
-    factor = 3.016103031869581e21 *  TR*sqrt(TR) * exp(-3.399571517984581/TR);
-    Beta[0] *= factor;              /* 2s */
-    Beta[1] *= factor/3.;           /* 2p */
 
     /* Effective 2p->2s rate */
     *R2p2s = exp(rate_table->logR2p2s_tab[iTR-1]*coeff2[0]
                 +rate_table->logR2p2s_tab[iTR]*coeff2[1]
                 +rate_table->logR2p2s_tab[iTR+1]*coeff2[2]
                 +rate_table->logR2p2s_tab[iTR+2]*coeff2[3]);
+
+    /* Effective 2s->2p rate */
+    *R2s2p = exp(rate_table->logR2s2p_tab[iTR-1]*coeff2[0]
+                +rate_table->logR2s2p_tab[iTR]*coeff2[1]
+                +rate_table->logR2s2p_tab[iTR+1]*coeff2[2]
+                +rate_table->logR2s2p_tab[iTR+2]*coeff2[3]);
 
 }
 
