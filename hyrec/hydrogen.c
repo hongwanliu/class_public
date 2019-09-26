@@ -204,10 +204,10 @@ void interpolate_rates(double Alpha[2], double Beta[2], double *R2p2s, double *R
         + rate_table->logAlpha_tab[l][iTR+2]*coeff2[3]
       ); 
       Beta[l] = exp(
-        rate_table->logAlpha_tab[l][iTR-1]*coeff2[0]
-        + rate_table->logAlpha_tab[l][iTR]*coeff2[1]
-        + rate_table->logAlpha_tab[l][iTR+1]*coeff2[2]
-        + rate_table->logAlpha_tab[l][iTR+2]*coeff2[3]
+        rate_table->logBeta_tab[l][iTR-1]*coeff2[0]
+        + rate_table->logBeta_tab[l][iTR]*coeff2[1]
+        + rate_table->logBeta_tab[l][iTR+1]*coeff2[2]
+        + rate_table->logBeta_tab[l][iTR+2]*coeff2[3]
       ); 
     }
 

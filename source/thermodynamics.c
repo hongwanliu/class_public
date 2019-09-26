@@ -2787,6 +2787,14 @@ int thermodynamics_recombination_with_hyrec(
 
   rec_build_history(&param, &rate_table, &twog_params, xe_output, Tm_output);
 
+  FILE *ftest = fopen("./test_xe.dat", "w");
+
+  for(int iz=0; iz<param.nz; iz++){
+    fprintf(ftest, "%le    %le \n",(1.+param.zstart)*exp(-param.dlna*iz) - 1., xe_output[iz]);
+  }
+
+  fclose(ftest);
+
   if (pth->thermodynamics_verbose > 0)
     printf("    by Y. Ali-Haïmoud & C. Hirata\n");
 
