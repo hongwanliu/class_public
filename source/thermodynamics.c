@@ -2746,7 +2746,7 @@ int thermodynamics_recombination_with_hyrec(
     rate_table.logR2p2s_tab[i] = log(rate_table.logR2p2s_tab[i]);
     if (fscanf(fR_2sto2p, "%le", &(rate_table.logR2s2p_tab[i])) !=1)
       class_stop(pth->error_message,"Error reading hyrec data file %s",ppr->hyrec_R_2sto2p_inf_file);
-    rate_table.logR2sto2p_tab[i] = log(rate_table.logR2s2p_tab[i]);
+    rate_table.logR2s2p_tab[i] = log(rate_table.logR2s2p_tab[i]);
 
   }
   fclose(fA);
