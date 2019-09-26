@@ -95,7 +95,9 @@ Store tabulated temperatures and read effective MLA rates from files.
 void read_rates(HRATEEFF *rate_table){
 
    FILE *fA = fopen(ALPHA_FILE, "r");
-   FILE *fR = fopen(RR_FILE, "r");
+   FILE *fB = fopen(BETA_FILE, "r");
+   FILE *fR_2sto2p = fopen(RR_FILE_2sto2p, "r");
+   FILE *fR_2pto2s = fopen(RR_FILE_2pto2s, "r");
 
    unsigned i, j, l;
    int fscanf_result;
