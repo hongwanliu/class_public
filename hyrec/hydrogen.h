@@ -66,7 +66,7 @@ typedef struct {
 HRATEEFF;
 
 void read_rates(HRATEEFF *rate_table);
-void interpolate_rates(double Alpha[2], double Beta[2], double *R2p2s, double TR, double TM_TR, HRATEEFF *rate_table);
+void interpolate_rates(double Alpha[2], double Beta[2], double *R2p2s, double *R2s2p, double TR, double TM_TR, HRATEEFF *rate_table);
 double rec_HMLA_dxedlna(double xe, double nH, double Hubble, double TM, double TR, double energy_rate, HRATEEFF *rate_table);
 
 /************ TWO-PHOTON PROCESSES AND DIFFUSION  ************/
