@@ -235,7 +235,7 @@ double rec_HMLA_dxedlna(double xe, double nH, double Hubble, double TM, double T
 
    double Alpha[2];
    double Beta[2];
-   double R2p2s;
+   double R2p2s, R2s2p;
    double matrix[2][2];
    double RHS[2];
    double det, RLya;
@@ -244,12 +244,12 @@ double rec_HMLA_dxedlna(double xe, double nH, double Hubble, double TM, double T
    double C_2p;
    double chi_ion_H;
 
-   interpolate_rates(Alpha, Beta, &R2p2s, TR, TM / TR, rate_table);
+   interpolate_rates(Alpha, Beta, &R2p2s, &R2s2p, TR, TM / TR, rate_table);
 
    x1s_db = (1.-xe)*exp(-E21/TR);
 
    /******** 2s *********/
-   matrix[0][0] = Beta[0] + 3.*R2p2s + L2s1s;
+   matrix[0][0] = Beta[0] + R2s2p + L2s1s;
    matrix[0][1] = -R2p2s;
    RHS[0]       = xe*xe*nH *Alpha[0] + L2s1s *x1s_db;
 
@@ -257,7 +257,7 @@ double rec_HMLA_dxedlna(double xe, double nH, double Hubble, double TM, double T
    RLya = 4.662899067555897e15 *Hubble /nH/(1.-xe);   /*8 PI H/(3 nH x1s lambda_Lya^3) */
 
    matrix[1][1] = Beta[1] + R2p2s + RLya;
-   matrix[1][0] = -3.*R2p2s;
+   matrix[1][0] = -R2s2p;
    RHS[1]       = xe*xe*nH *Alpha[1] + 3.*RLya *x1s_db;
 
    /**** invert the 2 by 2 system matrix_ij * xj = RHSi *****/
@@ -265,7 +265,7 @@ double rec_HMLA_dxedlna(double xe, double nH, double Hubble, double TM, double T
    x2[0] = (matrix[1][1] * RHS[0] - matrix[0][1] * RHS[1])/det;
    x2[1] = (matrix[0][0] * RHS[1] - matrix[1][0] * RHS[0])/det;
 
-   C_2p=(RLya+R2p2s*L2s1s/matrix[0][0])/(matrix[1][1]-R2p2s*3.*R2p2s/matrix[0][0]);
+   C_2p=(RLya+R2p2s*L2s1s/matrix[0][0])/(matrix[1][1]-R2p2s*R2s2p/matrix[0][0]);
 
    //chi_ion_H = (1.-xe)/3.; // old approximation from Chen and Kamionkowski
     if (xe < 1.)
@@ -410,7 +410,7 @@ void populateTS_2photon(double Trr[2][2], double *Trv[2], double *Tvr[2], double
                         TWO_PHOTON_PARAMS *twog, double fplus[NVIRT], double fplus_Ly[],
                         double Alpha[2], double Beta[2], double z) {
 
-   double R2p2s;
+   double R2p2s, R2s2p;
    unsigned b;
    double  RLya, Gammab, Pib, dbfact;
 
@@ -422,11 +422,11 @@ void populateTS_2photon(double Trr[2][2], double *Trv[2], double *Tvr[2], double
 
    RLya = 4.662899067555897e15 *H /nH/(1.-xe);   /*8 PI H/(3 nH x1s lambda_Lya^3) */
 
-   interpolate_rates(Alpha, Beta, &R2p2s, TR, TM / TR, rate_table);
+   interpolate_rates(Alpha, Beta, &R2p2s, &R2s2p, TR, TM / TR, rate_table);
 
    /****** 2s row and column ******/
 
-   Trr[0][0] = Beta[0] + 3.*R2p2s
+   Trr[0][0] = Beta[0] + R2s2p
              + 3.* RLya * (1.664786871919931 *exp(-E32/TR)     /* Ly-beta escape */
 	                          + 1.953125 *exp(-E42/TR));   /* Ly-gamma escape */
 
@@ -445,7 +445,7 @@ void populateTS_2photon(double Trr[2][2], double *Trv[2], double *Tvr[2], double
    /****** 2p row and column ******/
 
    Trr[1][1] = Beta[1] + R2p2s + RLya;
-   Trr[1][0] = -3.*R2p2s;
+   Trr[1][0] = -R2s2p;
    sr[1]     = nH * Alpha[1] * xe*xe + 3.*RLya * (1.-xe) * fplus_Ly[0];
 
 
@@ -698,7 +698,7 @@ double rec_HMLA_2photon_dxedlna(double xe, double nH, double H, double TM, doubl
    double Alpha[2], Beta[2];
 
    double RLya;
-   double R2p2s;
+   double R2p2s, R2s2p;
    double C_2p;
 
    double chi_ion_H;
@@ -724,12 +724,12 @@ double rec_HMLA_2photon_dxedlna(double xe, double nH, double H, double TM, doubl
    /* Dark matter annihilation*/
    RLya = 4.662899067555897e15 *H /nH/(1.-xe);   /*8 PI H/(3 nH x1s lambda_Lya^3) */
 
-   interpolate_rates(Alpha, Beta, &R2p2s, TR, TM / TR, rate_table);
+   interpolate_rates(Alpha, Beta, &R2p2s, &R2s2p, TR, TM / TR, rate_table);
 
-   matrix[0][0] = Beta[0] + 3.*R2p2s + L2s1s;
+   matrix[0][0] = Beta[0] + R2s2p + L2s1s;
    matrix[1][1] = Beta[1] + R2p2s + RLya;
 
-   C_2p=(RLya+R2p2s*L2s1s/matrix[0][0])/(matrix[1][1]-R2p2s*3.*R2p2s/matrix[0][0]);
+   C_2p=(RLya+R2p2s*L2s1s/matrix[0][0])/(matrix[1][1]-R2p2s*R2s2p/matrix[0][0]);
 
 
    /*************************************************************/
