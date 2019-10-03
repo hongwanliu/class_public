@@ -256,6 +256,18 @@ struct thermo
 };
 
 /**
+ * HL: Structure for storage of effective rates. 
+ * Internal to the thermodynamics module. 
+ */
+struct effective_rates{
+  double * TR       /**< Radiation temperature abscissa. */
+  double * Alpha[2] /**< Effective recombination coefficient for 2s and 2p at each TR. */
+  double * Beta[2]  /**< Effective photoionization coefficient for 2s and 2p at each TR. */
+  double * R_2pto2s /**< Effective 2p -> 2s transition rate at each TR. */
+  double * R_2sto2p /**< Effective 2s -> 2p transition rate at each TR. */
+}
+
+/**
  * Temporary structure where all the recombination history is defined and stored.
  *
  * This structure is used internally by the thermodynamics module,
