@@ -29,6 +29,7 @@ cdef extern from "class.h":
 
     cdef struct precision:
         double recfast_fudge_H
+        double * f_occup
         FileName hyrec_Alpha_inf_file
         FileName hyrec_Beta_inf_file
         FileName hyrec_R_2pto2s_inf_file
